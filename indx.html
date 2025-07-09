@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>AR.js Kamera Aktif</title>
+  <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+  <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+  <script src="https://raw.githack.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script>
+  <script src="https://raw.githack.com/AR-js-org/studio-backend/master/src/modules/marker/tools/gesture-detector.js"></script>
+  <script src="https://raw.githack.com/AR-js-org/studio-backend/master/src/modules/marker/tools/gesture-handler.js"></script>
+</head>
+<body style="margin:0; overflow:hidden;">
+  <a-scene
+    embedded
+    vr-mode-ui="enabled: false"
+    renderer="logarithmicDepthBuffer: true"
+    arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;"
+    gesture-detector
+  >
+    <a-assets>
+      <a-asset-item id="free_fireModel" src="assets/free_fire.glb"></a-asset-item>
+      <audio id="music" src="assets/free_fire.mp3" preload="auto"></audio>
+    </a-assets>
+
+    <a-marker
+      type="pattern"
+      url="assets/fire.patt"
+      emitevents="true"
+    >
+      <a-entity
+  id="free_fire"
+  position="0 0.5 0"
+  scale="1.5 1.5 1.5"
+  gltf-model="#free_fireModel"
+  animation-mixer
+  gesture-handler="minScale:0.5; maxScale:3; rotationFactor:5"
+>
+  <a-box position="0 0.5 0"></a-box>
+</a-entity>
+
+      <a-sound src="#music" autoplay="false" loop="true"></a-sound>
+    </a-marker>
+
+    <a-entity camera></a-entity>
+  </a-scene>
+
+  <script>
+    // Event untuk kontrol audio
+    const marker = document.querySelector("a-marker");
+    const sound = document.querySelector("a-sound");
+
+    marker.addEventListener("markerFound", () => {
+      if (sound && sound.components.sound) sound.components.sound.playSound();
+    });
+    marker.addEventListener("markerLost", () => {
+      if (sound && sound.components.sound) sound.components.sound.stopSound();
+    });
+  </script>
+</body>
+</html>
